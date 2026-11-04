@@ -6,9 +6,12 @@
  *
  * 渲染一律用 createElement + textContent，不拼 innerHTML：
  * 书签标题来自网页 <title>，属于不可信内容，拼字符串会有注入风险。
+ *
+ * 界面文案全部走 i18n.t()，跟随浏览器 UI 语言，不在代码里硬编码中英文。
  */
 
 import { DEFAULTS, setSetting } from '../lib/settings.js';
+import { applyStaticI18n, t, htmlLang } from '../lib/i18n.js';
 
 const treeEl = document.getElementById('tree');
 const qEl = document.getElementById('q');
@@ -19,6 +22,8 @@ let flatBookmarks = [];
 init();
 
 async function init() {
+  applyStaticI18n();
+
   await bindSettings();
   await renderTree();
   await renderDiag();
@@ -56,9 +61,10 @@ async function bindSettings() {
 
   for (const key of ['enabled', 'activateNewTab', 'skipPinned']) {
     const el = document.getElementById(key);
+    if (!el) continue;
     el.checked = Boolean(settings[key]);
     el.addEventListener('change', () => {
-      setSetting(key, el.checked).catch((err) => console.error('保存设置失败', err));
+      setSetting(key, el.checked).catch((err) => console.error('save setting failed', err));
     });
   }
 }
@@ -72,7 +78,7 @@ async function renderTree() {
     const visible = top.filter((n) => (n.children?.length ?? 0) > 0 || n.url);
 
     if (!visible.length) {
-      renderEmpty('还没有书签');
+      renderEmpty(t('emptyNoBookmarks'));
       return;
     }
 
@@ -80,8 +86,8 @@ async function renderTree() {
     for (const node of visible) treeEl.appendChild(renderNode(node, 0));
     flatBookmarks = flatten(visible);
   } catch (err) {
-    console.error('读取书签失败', err);
-    renderEmpty('读取书签失败：' + (err?.message ?? err));
+    console.error('read bookmarks failed', err);
+    renderEmpty(t('emptyReadFailed', err?.message ?? err));
   }
 }
 
@@ -95,7 +101,7 @@ function renderNode(node, depth) {
   const summary = document.createElement('summary');
   const name = document.createElement('span');
   name.className = 'folder-name';
-  name.textContent = node.title || '未命名文件夹';
+  name.textContent = node.title || t('untitledFolder');
 
   const count = document.createElement('span');
   count.className = 'folder-count';
@@ -131,14 +137,14 @@ function renderBookmark(node) {
 function renderSearch(keyword) {
   const hits = flatBookmarks
     .filter((n) => {
-      const t = (n.title || '').toLowerCase();
-      return t.includes(keyword) || n.url.toLowerCase().includes(keyword);
+      const t0 = (n.title || '').toLowerCase();
+      return t0.includes(keyword) || n.url.toLowerCase().includes(keyword);
     })
     .slice(0, 120);
 
   treeEl.textContent = '';
   if (!hits.length) {
-    renderEmpty('没有匹配的书签');
+    renderEmpty(t('emptyNoMatch'));
     return;
   }
   for (const node of hits) treeEl.appendChild(renderBookmark(node));
@@ -158,6 +164,9 @@ function renderEmpty(text) {
  * 诊断区的作用：把「浏览器到底有没有把这次点击标成 auto_bookmark」
  * 变成肉眼可见的事实，而不是让用户对着「没反应」猜。
  * 记录只写在 chrome.storage.session（本机会话内存），关浏览器即清空，不上传。
+ *
+ * 后台存的是 reasonKey + reasonArgs（不是已翻译的句子），
+ * 这样诊断区语言永远和当前界面一致，后台也不用碰文案。
  */
 async function renderDiag() {
   const listEl = document.getElementById('diagList');
@@ -168,7 +177,7 @@ async function renderDiag() {
     const stored = await chrome.storage.session.get('diagEvents');
     events = Array.isArray(stored.diagEvents) ? stored.diagEvents : [];
   } catch (err) {
-    console.warn('读取诊断记录失败', err);
+    console.warn('read diagnostics failed', err);
   }
 
   listEl.textContent = '';
@@ -176,9 +185,7 @@ async function renderDiag() {
   if (!events.length) {
     const p = document.createElement('p');
     p.className = 'diag-empty';
-    p.textContent =
-      '还没有记录到书签点击。点一下收藏夹栏或顶部「收藏夹」菜单里的书签，再打开这里查看。' +
-      '如果这里一直为空，说明你这版浏览器没有把书签点击标成 auto_bookmark。';
+    p.textContent = t('diagEmptyText');
     listEl.appendChild(p);
     return;
   }
@@ -195,28 +202,31 @@ function renderDiagItem(ev) {
 
   const time = document.createElement('span');
   time.className = 'diag-time';
-  time.textContent = new Date(ev.t).toLocaleTimeString('zh-CN', { hour12: false });
+  time.textContent = new Date(ev.t).toLocaleTimeString(htmlLang(), { hour12: false });
 
   const tag = document.createElement('span');
   const opened = ev.result === 'opened';
   tag.className = 'diag-tag ' + (opened ? 'ok' : 'skip');
   tag.textContent =
-    ev.result === 'opened' ? '已新开'
-      : ev.result === 'failed' ? '失败'
-      : ev.result === 'other' ? '非书签'
-      : '未处理';
+    ev.result === 'opened' ? t('tagOpened')
+      : ev.result === 'failed' ? t('tagFailed')
+      : ev.result === 'other' ? t('tagOther')
+      : t('tagSkipped');
 
   // 把浏览器给的原始 transitionType 显示出来：排错时这一列最关键
   const tt = document.createElement('span');
   tt.className = 'diag-tt';
-  tt.textContent = ev.tt || '无类型';
-  tt.title = '浏览器上报的导航类型（transitionType）。书签点击应为 auto_bookmark';
+  tt.textContent = ev.tt || t('ttNone');
+  tt.title = t('ttTip');
 
   head.append(time, tag, tt);
 
   const reason = document.createElement('div');
   reason.className = 'diag-reason';
-  reason.textContent = ev.reason || '';
+  // reasonKey 是新格式；reason 是 1.2.0 及更早留下的旧记录，兼容显示
+  reason.textContent = ev.reasonKey
+    ? t(ev.reasonKey, ...(ev.reasonArgs ?? []))
+    : ev.reason || '';
 
   row.append(head, reason);
 
@@ -229,7 +239,6 @@ function renderDiagItem(ev) {
 
   return row;
 }
-
 
 /* ------------------------------ 工具 ------------------------------ */
 
@@ -255,6 +264,6 @@ async function openBookmark(url, foreground) {
     await chrome.tabs.create({ url, active: foreground });
     window.close();
   } catch (err) {
-    console.error('打开书签失败', err);
+    console.error('open bookmark failed', err);
   }
 }

@@ -1,39 +1,54 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="popup.css" />
-    <title>书签（新标签打开）</title>
+    <title>Bookmarks (open in new tab)</title>
   </head>
   <body>
+    <!-- 文案不写死在这里：全部来自 _locales/<locale>/messages.json，
+         加一门语言只要加一份 json，不用动这个文件 -->
     <header class="bar">
-      <input id="q" type="search" placeholder="搜索书签…" autocomplete="off" spellcheck="false" />
+      <input
+        id="q"
+        type="search"
+        placeholder="Search bookmarks…"
+        data-i18n-placeholder="searchPlaceholder"
+        autocomplete="off"
+        spellcheck="false"
+      />
     </header>
 
-    <main id="tree" class="tree" role="tree" aria-label="书签列表">
-      <p class="empty" id="loading">正在读取书签…</p>
+    <main
+      id="tree"
+      class="tree"
+      role="tree"
+      aria-label="Bookmark list"
+      data-i18n-aria-label="treeLabel"
+    >
+      <p class="empty" id="loading" data-i18n="loadingText">Loading bookmarks…</p>
     </main>
 
     <footer class="settings">
       <label class="row">
         <input type="checkbox" id="enabled" />
-        <span>点书签时在新标签页打开</span>
+        <span data-i18n="optEnabled">Open bookmarks in a new tab</span>
       </label>
       <label class="row sub">
         <input type="checkbox" id="activateNewTab" />
-        <span>新标签立即切到前台</span>
+        <span data-i18n="optActivate">Switch to the new tab right away</span>
       </label>
       <label class="row sub">
         <input type="checkbox" id="skipPinned" />
-        <span>固定标签页不拦截</span>
+        <span data-i18n="optSkipPinned">Leave pinned tabs alone</span>
       </label>
-      <p class="hint">
-        面板里：单击 = 新标签打开 · 中键或 Ctrl+单击 = 后台打开
+      <p class="hint" data-i18n="hintPanel">
+        In this panel: click opens in a new tab · middle-click or Ctrl+click opens in the background
       </p>
 
       <details class="diag">
-        <summary>诊断 · 最近的书签点击</summary>
+        <summary data-i18n="diagSummary">Diagnostics · recent bookmark clicks</summary>
         <div class="diag-list" id="diagList"></div>
       </details>
     </footer>

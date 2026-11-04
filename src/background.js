@@ -153,14 +153,20 @@ chrome.webNavigation.onCommitted.addListener((details) => {
 /* 判断：该不该拦（集中在一处，同时在诊断里给出现成的原因）                 */
 /* ------------------------------------------------------------------ */
 
+/**
+ * 返回的是 _locales 里的文案 key（reasonKey），不是翻好的句子。
+ * service worker 不知道自己该说哪种语言 —— 界面语言是 popup 那边的事，
+ * 所以这里只给 key，由 popup 用 chrome.i18n 翻成当前界面语言。
+ * 需要插入动态内容的（如错误信息）放 reasonArgs，对应文案里的 {0} {1}。
+ */
 function decide({ targetUrl, originUrl, tab, settings }) {
-  if (!isWebUrl(targetUrl)) return { ok: false, reason: '书签目标不是普通网页，不处理' };
-  if (!settings.enabled) return { ok: false, reason: '总开关已关闭' };
-  if (!originUrl) return { ok: false, reason: '不知道原来的页面是哪一页（扩展刚重载过？）' };
-  if (originUrl === targetUrl) return { ok: false, reason: '目标与当前地址相同（等于刷新）' };
-  if (settings.skipPinned && tab.pinned) return { ok: false, reason: '固定标签页，按设置跳过' };
-  if (isBlankUrl(originUrl)) return { ok: false, reason: '当前是空白新标签页，直接在里面打开' };
-  if (!isWebUrl(originUrl)) return { ok: false, reason: '原页面是浏览器内部页（edge:// 之类）' };
+  if (!isWebUrl(targetUrl)) return { ok: false, reasonKey: 'reason_notWeb' };
+  if (!settings.enabled) return { ok: false, reasonKey: 'reason_disabled' };
+  if (!originUrl) return { ok: false, reasonKey: 'reason_noOrigin' };
+  if (originUrl === targetUrl) return { ok: false, reasonKey: 'reason_sameUrl' };
+  if (settings.skipPinned && tab.pinned) return { ok: false, reasonKey: 'reason_pinned' };
+  if (isBlankUrl(originUrl)) return { ok: false, reasonKey: 'reason_blank' };
+  if (!isWebUrl(originUrl)) return { ok: false, reasonKey: 'reason_internal' };
   return { ok: true };
 }
 
@@ -186,11 +192,11 @@ async function handleCommitted(details) {
   if (transitionType !== 'auto_bookmark') {
     logDiag({
       t: at,
-      tt: transitionType || '无类型',
+      tt: transitionType || '',
       target: trimUrl(targetUrl),
       origin: trimUrl(originUrl),
       result: 'other',
-      reason: '这次导航不是书签发起的'
+      reasonKey: 'reason_notBookmark'
     });
     return;
   }
@@ -199,7 +205,7 @@ async function handleCommitted(details) {
   try {
     tab = await chrome.tabs.get(tabId);
   } catch {
-    logDiag({ t: at, tt: transitionType, target: trimUrl(targetUrl), origin: '', result: 'skipped', reason: '标签页已关闭' });
+    logDiag({ t: at, tt: transitionType, target: trimUrl(targetUrl), origin: '', result: 'skipped', reasonKey: 'reason_tabClosed' });
     return;
   }
   if (!tab || tab.id === undefined || tab.id < 0) return;
@@ -217,7 +223,7 @@ async function handleCommitted(details) {
       target: trimUrl(targetUrl),
       origin: trimUrl(originUrl),
       result: 'skipped',
-      reason: verdict.reason
+      reasonKey: verdict.reasonKey
     });
     return;
   }
@@ -238,7 +244,7 @@ async function handleCommitted(details) {
   } catch (err) {
     const msg = err?.message ?? String(err);
     console.warn('[书签新标签] 新开标签失败，保持原地打开：', msg);
-    logDiag({ t: at, tt: transitionType, target: trimUrl(targetUrl), origin: trimUrl(originUrl), result: 'failed', reason: `新开标签失败：${msg}` });
+    logDiag({ t: at, tt: transitionType, target: trimUrl(targetUrl), origin: trimUrl(originUrl), result: 'failed', reasonKey: 'reason_createFailed', reasonArgs: [msg] });
     return;
   }
 
@@ -266,7 +272,7 @@ async function handleCommitted(details) {
     target: trimUrl(targetUrl),
     origin: trimUrl(originUrl),
     result: 'opened',
-    reason: restored ? '已新开标签并退回原页面' : '已新开标签，但原页面还原失败'
+    reasonKey: restored ? 'reason_opened' : 'reason_openedRestoreFailed'
   });
 
   void created;

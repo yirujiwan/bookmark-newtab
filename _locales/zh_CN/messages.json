@@ -10,5 +10,138 @@
   "actionTitle": {
     "message": "书签（新标签打开）",
     "description": "工具栏按钮的悬停提示"
+  },
+
+  "popupTitle": {
+    "message": "书签（新标签打开）",
+    "description": "popup 窗口标题"
+  },
+  "searchPlaceholder": {
+    "message": "搜索书签…",
+    "description": "搜索框占位文字"
+  },
+  "treeLabel": {
+    "message": "书签列表",
+    "description": "书签树的读屏标签"
+  },
+  "loadingText": {
+    "message": "正在读取书签…",
+    "description": "书签加载中的提示"
+  },
+
+  "optEnabled": {
+    "message": "点书签时在新标签页打开",
+    "description": "总开关文案"
+  },
+  "optActivate": {
+    "message": "新标签立即切到前台",
+    "description": "子开关：新标签是否立刻激活"
+  },
+  "optSkipPinned": {
+    "message": "固定标签页不拦截",
+    "description": "子开关：固定标签页是否跳过"
+  },
+  "hintPanel": {
+    "message": "面板里：单击 = 新标签打开 · 中键或 Ctrl+单击 = 后台打开",
+    "description": "面板操作提示"
+  },
+  "diagSummary": {
+    "message": "诊断 · 最近的书签点击",
+    "description": "诊断区折叠标题"
+  },
+
+  "emptyNoBookmarks": {
+    "message": "还没有书签",
+    "description": "书签为空的提示"
+  },
+  "emptyReadFailed": {
+    "message": "读取书签失败：{0}",
+    "description": "读取书签异常，{0} 为错误信息"
+  },
+  "emptyNoMatch": {
+    "message": "没有匹配的书签",
+    "description": "搜索无结果的提示"
+  },
+  "untitledFolder": {
+    "message": "未命名文件夹",
+    "description": "文件夹没有标题时的占位名"
+  },
+
+  "tagOpened": {
+    "message": "已新开",
+    "description": "诊断条目标签：成功拦截并新开标签"
+  },
+  "tagFailed": {
+    "message": "失败",
+    "description": "诊断条目标签：处理出错"
+  },
+  "tagOther": {
+    "message": "非书签",
+    "description": "诊断条目标签：这次导航不是书签发起的"
+  },
+  "tagSkipped": {
+    "message": "未处理",
+    "description": "诊断条目标签：命中规则被跳过"
+  },
+  "ttNone": {
+    "message": "无类型",
+    "description": "浏览器未上报 transitionType 时的占位"
+  },
+  "ttTip": {
+    "message": "浏览器上报的导航类型（transitionType）。书签点击应为 auto_bookmark",
+    "description": "诊断区 transitionType 列的说明"
+  },
+  "diagEmptyText": {
+    "message": "还没有记录到书签点击。点一下收藏夹栏或顶部「收藏夹」菜单里的书签，再打开这里查看。如果这里一直为空，说明你这版浏览器没有把书签点击标成 auto_bookmark。",
+    "description": "诊断区无记录时的说明"
+  },
+
+  "reason_notWeb": {
+    "message": "书签目标不是普通网页，不处理",
+    "description": "跳过的原因"
+  },
+  "reason_disabled": {
+    "message": "总开关已关闭",
+    "description": "跳过的原因"
+  },
+  "reason_noOrigin": {
+    "message": "不知道原来的页面是哪一页（扩展刚重载过？）",
+    "description": "跳过的原因"
+  },
+  "reason_sameUrl": {
+    "message": "目标与当前地址相同（等于刷新）",
+    "description": "跳过的原因"
+  },
+  "reason_pinned": {
+    "message": "固定标签页，按设置跳过",
+    "description": "跳过的原因"
+  },
+  "reason_blank": {
+    "message": "当前是空白新标签页，直接在里面打开",
+    "description": "跳过的原因"
+  },
+  "reason_internal": {
+    "message": "原页面是浏览器内部页（edge:// 之类）",
+    "description": "跳过的原因"
+  },
+  "reason_notBookmark": {
+    "message": "这次导航不是书签发起的",
+    "description": "跳过的原因"
+  },
+  "reason_tabClosed": {
+    "message": "标签页已关闭",
+    "description": "跳过的原因"
+  },
+  "reason_createFailed": {
+    "message": "新开标签失败：{0}",
+    "description": "新开标签出错，{0} 为错误信息"
+  },
+  "reason_opened": {
+    "message": "已新开标签并退回原页面",
+    "description": "成功处理"
+  },
+  "reason_openedRestoreFailed": {
+    "message": "已新开标签，但原页面还原失败",
+    "description": "部分成功"
   }
 }

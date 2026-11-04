@@ -10,5 +10,138 @@
   "actionTitle": {
     "message": "Bookmarks (open in new tab)",
     "description": "Tooltip of the toolbar button"
+  },
+
+  "popupTitle": {
+    "message": "Bookmarks (open in new tab)",
+    "description": "Popup window title"
+  },
+  "searchPlaceholder": {
+    "message": "Search bookmarks…",
+    "description": "Placeholder of the search box"
+  },
+  "treeLabel": {
+    "message": "Bookmark list",
+    "description": "Screen reader label of the bookmark tree"
+  },
+  "loadingText": {
+    "message": "Loading bookmarks…",
+    "description": "Shown while bookmarks are being read"
+  },
+
+  "optEnabled": {
+    "message": "Open bookmarks in a new tab",
+    "description": "Master switch"
+  },
+  "optActivate": {
+    "message": "Switch to the new tab right away",
+    "description": "Sub-switch: activate the new tab immediately"
+  },
+  "optSkipPinned": {
+    "message": "Leave pinned tabs alone",
+    "description": "Sub-switch: skip pinned tabs"
+  },
+  "hintPanel": {
+    "message": "In this panel: click opens in a new tab · middle-click or Ctrl+click opens in the background",
+    "description": "Usage hint for the panel"
+  },
+  "diagSummary": {
+    "message": "Diagnostics · recent bookmark clicks",
+    "description": "Title of the collapsible diagnostics section"
+  },
+
+  "emptyNoBookmarks": {
+    "message": "No bookmarks yet",
+    "description": "Shown when there are no bookmarks"
+  },
+  "emptyReadFailed": {
+    "message": "Could not read bookmarks: {0}",
+    "description": "Bookmark read error, {0} is the error message"
+  },
+  "emptyNoMatch": {
+    "message": "No matching bookmarks",
+    "description": "Shown when the search returns nothing"
+  },
+  "untitledFolder": {
+    "message": "Untitled folder",
+    "description": "Placeholder name for a folder without a title"
+  },
+
+  "tagOpened": {
+    "message": "Opened",
+    "description": "Diagnostics tag: intercepted and opened in a new tab"
+  },
+  "tagFailed": {
+    "message": "Failed",
+    "description": "Diagnostics tag: handling raised an error"
+  },
+  "tagOther": {
+    "message": "Not bookmark",
+    "description": "Diagnostics tag: the navigation did not come from a bookmark"
+  },
+  "tagSkipped": {
+    "message": "Skipped",
+    "description": "Diagnostics tag: skipped by a rule"
+  },
+  "ttNone": {
+    "message": "none",
+    "description": "Placeholder when the browser reports no transitionType"
+  },
+  "ttTip": {
+    "message": "Navigation type reported by the browser (transitionType). A bookmark click should be auto_bookmark",
+    "description": "Explanation of the transitionType column"
+  },
+  "diagEmptyText": {
+    "message": "No bookmark clicks recorded yet. Click a bookmark in the bookmarks bar or the Favorites menu, then check here again. If this stays empty, your browser is not tagging bookmark clicks as auto_bookmark.",
+    "description": "Shown when there are no diagnostics records"
+  },
+
+  "reason_notWeb": {
+    "message": "Bookmark target is not a regular web page",
+    "description": "Skip reason"
+  },
+  "reason_disabled": {
+    "message": "Master switch is off",
+    "description": "Skip reason"
+  },
+  "reason_noOrigin": {
+    "message": "Unknown original page (did the extension just reload?)",
+    "description": "Skip reason"
+  },
+  "reason_sameUrl": {
+    "message": "Target equals the current address (same as a refresh)",
+    "description": "Skip reason"
+  },
+  "reason_pinned": {
+    "message": "Pinned tab, skipped per settings",
+    "description": "Skip reason"
+  },
+  "reason_blank": {
+    "message": "Current tab is a blank new tab, opened in place",
+    "description": "Skip reason"
+  },
+  "reason_internal": {
+    "message": "Original page is a browser internal page (edge:// etc.)",
+    "description": "Skip reason"
+  },
+  "reason_notBookmark": {
+    "message": "This navigation did not come from a bookmark",
+    "description": "Skip reason"
+  },
+  "reason_tabClosed": {
+    "message": "Tab was closed",
+    "description": "Skip reason"
+  },
+  "reason_createFailed": {
+    "message": "Could not open the new tab: {0}",
+    "description": "Tab creation error, {0} is the error message"
+  },
+  "reason_opened": {
+    "message": "Opened in a new tab and restored the original page",
+    "description": "Handled successfully"
+  },
+  "reason_openedRestoreFailed": {
+    "message": "Opened in a new tab, but restoring the original page failed",
+    "description": "Partially successful"
   }
 }

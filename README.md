@@ -146,27 +146,63 @@ No network requests, no telemetry, no third-party services. The `bookmarks`
 permission is used only to render the popup list; nothing is written back.
 Navigation URLs stay in `chrome.storage.session` and disappear with the session.
 
+## Localization
+
+The panel follows the **browser UI language** automatically — no setting to flip.
+
+- Chinese browsers get Chinese
+- everything else falls back to English (`default_locale` is `en`)
+
+No user-facing string is hardcoded in JS or HTML. All of them live in
+`_locales/<locale>/messages.json`, and the HTML only carries `data-i18n` markers.
+
+The service worker does not store translated sentences either: the diagnostics log
+keeps a message key (`reason_opened`) plus arguments, and the popup resolves them at
+render time. Switch languages and the history reads correctly in the new language.
+
+**Adding a third language** (Japanese, say): copy `_locales/en` to `_locales/ja`,
+translate the `message` values, keep every key untouched, then reload the extension
+in the browser. No code changes.
+
+**Consistency check** (dev only):
+
+```bash
+node tools/check-i18n.mjs   # or: npm run check
+```
+
+It verifies that locales define the same keys, that every key referenced in code
+exists, and that `{0}` placeholders match across languages — a missing placeholder
+is the classic way translated strings silently swallow dynamic content.
+
 ## Project structure
 
 ```
 bookmark-newtab/
 ├── manifest.json            # MV3 manifest (localized name/description)
-├── _locales/{en,zh_CN}/     # extension name + description strings
+├── _locales/
+│   ├── en/messages.json     # name, description, every UI string
+│   └── zh_CN/messages.json
 ├── icons/                   # 16 / 48 / 128 px
 ├── src/
 │   ├── background.js        # onCommitted → auto_bookmark → new tab + goBack
-│   ├── lib/settings.js      # storage.sync wrapper with in-memory cache
-│   └── popup/               # bookmark tree, search, settings, diagnostics
+│   ├── lib/
+│   │   ├── settings.js      # storage.sync wrapper with in-memory cache
+│   │   └── i18n.js          # message lookup + {0} placeholder substitution
+│   └── popup/               # skeleton + data-i18n markers, no hardcoded copy
+├── tools/check-i18n.mjs     # dev-only key consistency check
+├── package.json             # only for `npm run check`; the extension has no build step
 ├── CHANGELOG.md
 ├── LICENSE
 ├── README.md
 └── README.zh-CN.md
 ```
 
-Two files matter if you want to change behaviour:
+Three places matter if you want to change behaviour:
 
 - `src/background.js` — constants at the top, plus `handleCommitted()` and `decide()`
 - `src/lib/settings.js` — `DEFAULTS`; add a checkbox in `src/popup/popup.html` to expose it
+  (add the label to both `messages.json` files)
+- `_locales/*/messages.json` — all copy, no code touched
 
 ## Contributing
 
@@ -174,8 +210,8 @@ Issues and pull requests are welcome. The most useful bug report includes your
 browser version and the `transitionType` your build reports for a bookmark click —
 that is the one field everything here hinges on.
 
-The popup UI is currently Chinese only; an i18n pass would be a good first
-contribution.
+If you want to add a language, only `_locales/` needs to change; run
+`node tools/check-i18n.mjs` before opening the PR.
 
 ## License
 

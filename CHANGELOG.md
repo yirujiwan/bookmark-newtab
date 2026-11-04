@@ -4,6 +4,25 @@ All notable changes to this project are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 versioning follows [Semantic Versioning](https://semver.org/).
 
+## [1.3.0] - 2026-11-04
+
+### Added
+- **Full UI localization.** Everything the user can read in the popup now comes from
+  `_locales`, so the panel follows the browser UI language instead of being
+  Chinese-only. English is the fallback (`default_locale`).
+- The service worker no longer stores translated sentences in the diagnostics log.
+  It stores a message key plus arguments, and the popup resolves them at render
+  time, so diagnostics always match the current UI language.
+- A key-consistency check (`npm run check` / `node tools/check-i18n.mjs`) that fails
+  when the locales drift apart or when code references a key that no locale defines.
+
+### Changed
+- UI strings in `popup.html` are placeholders for the `en` locale; the real values
+  live in `messages.json`.
+- Popup CSS tolerates longer English labels (wrapping in the settings rows, ellipsis
+  in the diagnostics header) so nothing overflows the 360 px panel.
+- Diagnostics timestamps render in the UI locale rather than being pinned to `zh-CN`.
+
 ## [1.2.0] - 2026-11-04
 
 ### Fixed

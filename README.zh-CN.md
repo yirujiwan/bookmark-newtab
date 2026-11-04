@@ -149,35 +149,66 @@ tabId / timeStamp / url`。类型字段只在 `onCommitted` 才有。
 
 ---
 
-## 八、文件结构
+## 八、界面语言
+
+面板会**自动跟随浏览器的界面语言**，不需要手动设置：
+
+- 浏览器是中文 → 显示中文
+- 其它语言 → 回落到英文（`manifest.json` 里 `default_locale` 是 `en`）
+
+界面里没有任何一句文案硬编码在 JS 或 HTML 里，全部来自 `_locales/<locale>/messages.json`。
+后台进程也不存翻译好的句子 —— 诊断记录里存的是文案 key（`reason_opened` 这种）加参数，
+由面板在渲染时翻译。这样切语言后，连历史诊断记录的语言也是对的。
+
+**想加第三种语言（比如日语）**：复制 `_locales/en` 为 `_locales/ja`，把 `message` 值翻掉，
+`key` 一个都不要动。然后在 Edge 里重新加载扩展即可，不用改任何代码。
+
+**提交前检查**（可选，只是开发期方便）：
+
+```bash
+node tools/check-i18n.mjs   # 或 npm run check
+```
+
+它会检查：各语言 key 是否对齐、代码引用的 key 是否都有定义、
+同一 key 的 `{0}` 占位符在各语言里数量是否一致（译文漏占位符是这类项目最常见的事故）。
+
+---
+
+## 九、文件结构
 
 ```
 bookmark-newtab/
 ├── manifest.json            # MV3 清单：权限、后台、popup（名称走 i18n）
 ├── _locales/
-│   ├── en/messages.json     # 英文扩展名与描述
-│   └── zh_CN/messages.json  # 中文扩展名与描述
+│   ├── en/messages.json     # 英文：扩展名、描述、全部界面文案
+│   └── zh_CN/messages.json  # 中文：同上
 ├── icons/                   # 16 / 48 / 128 图标
 ├── src/
 │   ├── background.js        # 核心：onCommitted 识别 auto_bookmark → 新开标签 + goBack
 │   ├── lib/
-│   │   └── settings.js      # 设置读写（sync + 内存缓存）
+│   │   ├── settings.js      # 设置读写（sync + 内存缓存）
+│   │   └── i18n.js          # 文案读取与 {0} 占位符替换
 │   └── popup/
-│       ├── popup.html
+│       ├── popup.html       # 只有骨架和 data-i18n 标记，没有写死的文案
 │       ├── popup.css
 │       └── popup.js         # 书签树 / 搜索 / 设置 / 诊断
+├── tools/
+│   └── check-i18n.mjs       # 开发期文案一致性检查（扩展运行时不使用）
+├── package.json             # 仅为 npm run check，扩展本身无构建步骤
 ├── CHANGELOG.md
 ├── LICENSE
 ├── README.md                # 英文说明
 └── README.zh-CN.md          # 本文件
 ```
 
-改行为只需要动两处：
+改行为只需要动三处：
 - 想调整拦截策略 → `src/background.js` 顶部的常量、`handleCommitted()` 和 `decide()`
 - 想加开关 → `src/lib/settings.js` 的 `DEFAULTS` + `popup.html` 里加一行 checkbox
+  （文案记得同时加进两个 `messages.json`）
+- 想改文案 → 只动 `_locales/*/messages.json`，不碰代码
 
 ---
 
-## 九、许可
+## 十、许可
 
 [MIT](LICENSE)

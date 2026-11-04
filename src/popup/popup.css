@@ -200,6 +200,17 @@ button.bm::before {
   cursor: default;
 }
 
+/* 英文文案比中文长，允许换行而不是撑破 360px 的宽度 */
+.row > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* checkbox 跟着首行居中，文案换成两行时不至于悬在中间 */
+.row input[type="checkbox"] {
+  flex: 0 0 auto;
+}
+
 .row.sub {
   color: var(--fg-dim);
   padding-left: 0;
@@ -281,13 +292,21 @@ button.bm::before {
 .diag-time {
   color: var(--fg-dim);
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  flex: 0 0 auto;
 }
 
+/* 英文标签（Not bookmark）比中文宽：过长就省略，别把右侧的 transitionType 挤没 */
 .diag-tag {
   padding: 0 5px;
   border-radius: 4px;
   font-size: 10px;
   line-height: 16px;
+  white-space: nowrap;
+  flex: 0 0 auto;
+  max-width: 96px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .diag-tag.ok {
@@ -306,6 +325,10 @@ button.bm::before {
   color: var(--fg-dim);
   opacity: 0.8;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  white-space: nowrap;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .diag-reason {
