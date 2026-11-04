@@ -1,0 +1,341 @@
+/* ===== 主题变量：跟随系统深浅色，避免白底闪一下 ===== */
+:root {
+  --bg: #ffffff;
+  --fg: #1b1b1f;
+  --fg-dim: #6b7076;
+  --line: #e6e8eb;
+  --hover: #f2f5f9;
+  --accent: #2f6feb;
+  --folder: #f7b731;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #202124;
+    --fg: #e8eaed;
+    --fg-dim: #9aa0a6;
+    --line: #35363a;
+    --hover: #2c2e33;
+    --accent: #7aa7ff;
+    --folder: #f0b429;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  width: 360px;
+  max-height: 560px;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  color: var(--fg);
+  font: 13px/1.45 system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+  overflow: hidden;
+}
+
+/* ===== 搜索栏 ===== */
+.bar {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line);
+  flex: 0 0 auto;
+}
+
+#q {
+  width: 100%;
+  padding: 6px 9px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--bg);
+  color: var(--fg);
+  font: inherit;
+  outline: none;
+}
+
+#q:focus {
+  border-color: var(--accent);
+}
+
+/* ===== 书签树 ===== */
+.tree {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 4px 6px 8px;
+  min-height: 80px;
+}
+
+.empty {
+  color: var(--fg-dim);
+  text-align: center;
+  padding: 18px 0;
+  margin: 0;
+}
+
+/* 文件夹用原生 details/summary，天然支持键盘与折叠，无需自己维护状态 */
+details.folder {
+  margin: 0;
+}
+
+details.folder > summary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 6px;
+  border-radius: 6px;
+  cursor: default;
+  color: var(--fg-dim);
+  font-weight: 600;
+  user-select: none;
+}
+
+details.folder > summary::-webkit-details-marker {
+  display: none;
+}
+
+details.folder > summary:hover {
+  background: var(--hover);
+}
+
+/* 折叠箭头 */
+details.folder > summary::before {
+  content: "";
+  width: 0;
+  height: 0;
+  border-left: 5px solid currentColor;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  transition: transform 0.12s ease;
+  flex: 0 0 auto;
+  opacity: 0.7;
+}
+
+details.folder[open] > summary::before {
+  transform: rotate(90deg) translateX(1px);
+}
+
+.folder-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.folder-count {
+  margin-left: auto;
+  font-weight: 400;
+  font-size: 11px;
+  opacity: 0.7;
+  flex: 0 0 auto;
+}
+
+.children {
+  padding-left: 11px;
+  border-left: 1px solid var(--line);
+  margin-left: 8px;
+}
+
+/* 书签条目 */
+button.bm {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  padding: 5px 7px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--fg);
+  font: inherit;
+  text-align: left;
+  cursor: default;
+}
+
+button.bm:hover {
+  background: var(--hover);
+}
+
+button.bm:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+/* 小圆点代替 favicon：不需要额外权限，也不会因为站点图标缺失而闪空 */
+button.bm::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.55;
+  flex: 0 0 auto;
+}
+
+.bm-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ===== 设置区 ===== */
+.settings {
+  flex: 0 0 auto;
+  border-top: 1px solid var(--line);
+  padding: 8px 12px 10px;
+  background: var(--bg);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 2px 0;
+  cursor: default;
+}
+
+.row.sub {
+  color: var(--fg-dim);
+  padding-left: 0;
+}
+
+.row input[type="checkbox"] {
+  accent-color: var(--accent);
+  margin: 0;
+  cursor: pointer;
+}
+
+.hint {
+  margin: 7px 0 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--fg-dim);
+  opacity: 0.85;
+}
+
+/* ===== 诊断区（默认折叠，不干扰主界面） ===== */
+.diag {
+  margin-top: 6px;
+  padding-top: 5px;
+  border-top: 1px dashed var(--line);
+}
+
+.diag > summary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 0;
+  font-size: 11px;
+  color: var(--fg-dim);
+  cursor: default;
+  user-select: none;
+}
+
+.diag > summary::-webkit-details-marker {
+  display: none;
+}
+
+.diag > summary::before {
+  content: "";
+  width: 0;
+  height: 0;
+  border-left: 5px solid currentColor;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  opacity: 0.6;
+  transition: transform 0.12s ease;
+}
+
+.diag[open] > summary::before {
+  transform: rotate(90deg) translateX(1px);
+}
+
+.diag-list {
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.diag-item {
+  padding: 5px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.diag-item:last-child {
+  border-bottom: 0;
+}
+
+.diag-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+}
+
+.diag-time {
+  color: var(--fg-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.diag-tag {
+  padding: 0 5px;
+  border-radius: 4px;
+  font-size: 10px;
+  line-height: 16px;
+}
+
+.diag-tag.ok {
+  background: rgba(30, 142, 62, 0.14);
+  color: #1e8e3e;
+}
+
+.diag-tag.skip {
+  background: rgba(140, 140, 140, 0.18);
+  color: var(--fg-dim);
+}
+
+.diag-tt {
+  margin-left: auto;
+  font-size: 10px;
+  color: var(--fg-dim);
+  opacity: 0.8;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.diag-reason {
+  margin-top: 2px;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.diag-url {
+  margin-top: 1px;
+  font-size: 10px;
+  color: var(--fg-dim);
+  word-break: break-all;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.diag-empty {
+  margin: 6px 0 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--fg-dim);
+}
+
+@media (prefers-color-scheme: dark) {
+  .diag-tag.ok {
+    background: rgba(129, 201, 149, 0.18);
+    color: #81c995;
+  }
+}
+

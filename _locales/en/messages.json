@@ -1,0 +1,14 @@
+{
+  "extName": {
+    "message": "Bookmark New Tab",
+    "description": "Extension name shown in the browser and the stores"
+  },
+  "extDesc": {
+    "message": "Open bookmarks in a new tab instead of replacing the page you are reading.",
+    "description": "Short description shown in the extensions list"
+  },
+  "actionTitle": {
+    "message": "Bookmarks (open in new tab)",
+    "description": "Tooltip of the toolbar button"
+  }
+}

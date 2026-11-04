@@ -1,0 +1,14 @@
+{
+  "extName": {
+    "message": "书签新标签打开",
+    "description": "扩展在浏览器与商店里显示的名称"
+  },
+  "extDesc": {
+    "message": "点击书签时自动在新标签页打开，不再覆盖当前正在浏览的网页。",
+    "description": "扩展列表里的简短说明"
+  },
+  "actionTitle": {
+    "message": "书签（新标签打开）",
+    "description": "工具栏按钮的悬停提示"
+  }
+}

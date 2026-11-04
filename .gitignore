@@ -1,0 +1,15 @@
+# macOS
+.DS_Store
+
+# 打包产物与私钥（--pack-extension 生成，绝不入库）
+*.crx
+*.pem
+*.zip
+
+# 编辑器
+.vscode/
+.idea/
+
+# 依赖与构建（本项目零依赖，留作以后扩展）
+node_modules/
+dist/
