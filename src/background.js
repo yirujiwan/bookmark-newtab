@@ -187,6 +187,11 @@ async function handleCommitted(details) {
   const originUrl = committedUrl.get(tabId) || pending?.origin || '';
   committedUrl.set(tabId, targetUrl);
 
+  // 扩展自己的页面（popup / options）不记录：
+  // 否则每次打开诊断面板，面板自身的加载都会往诊断区塞一条「非书签」记录，
+  // 把真正要看的那几条挤下去。这一条是实测截图时发现的。
+  if (targetUrl.startsWith(`chrome-extension://${chrome.runtime.id}/`)) return;
+
   // 只关心书签发起的导航；其余类型不插手，但要留一条旁证：
   // 万一某个版本把书签点击报成了别的类型，用户打开面板就能直接看到实际值，不用猜。
   if (transitionType !== 'auto_bookmark') {

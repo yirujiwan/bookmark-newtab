@@ -12,6 +12,8 @@ It intercepts clicks on the browser's *own* bookmarks bar and **Bookmarks** menu
 You keep using your bookmarks exactly as before — there is no replacement panel
 to learn, and no change to how you browse.
 
+<img src="docs/popup-en.png" width="360" alt="Extension panel: bookmark tree, settings, and diagnostics" />
+
 ---
 
 ## The problem
@@ -189,6 +191,7 @@ bookmark-newtab/
 │   │   ├── settings.js      # storage.sync wrapper with in-memory cache
 │   │   └── i18n.js          # message lookup + {0} placeholder substitution
 │   └── popup/               # skeleton + data-i18n markers, no hardcoded copy
+├── docs/                    # panel screenshots used by the READMEs
 ├── tools/check-i18n.mjs     # dev-only key consistency check
 ├── package.json             # only for `npm run check`; the extension has no build step
 ├── CHANGELOG.md

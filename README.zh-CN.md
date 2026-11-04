@@ -11,6 +11,8 @@
 - 地址栏下方的**收藏夹栏**
 - 顶部菜单栏的**「收藏夹」菜单**（含里面的子文件夹）
 
+<img src="docs/popup-zh.png" width="360" alt="扩展面板：书签树、开关、诊断区" />
+
 ---
 
 ## 一、安装（30 秒）
@@ -192,6 +194,7 @@ bookmark-newtab/
 │       ├── popup.html       # 只有骨架和 data-i18n 标记，没有写死的文案
 │       ├── popup.css
 │       └── popup.js         # 书签树 / 搜索 / 设置 / 诊断
+├── docs/                    # README 里用的面板截图
 ├── tools/
 │   └── check-i18n.mjs       # 开发期文案一致性检查（扩展运行时不使用）
 ├── package.json             # 仅为 npm run check，扩展本身无构建步骤

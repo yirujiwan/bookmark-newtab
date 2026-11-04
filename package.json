@@ -1,6 +1,6 @@
 {
   "name": "bookmark-newtab",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "private": true,
   "description": "Open bookmarks in a new tab instead of replacing the page you are reading. Dev-only manifest: the extension itself ships with no build step.",
   "type": "module",

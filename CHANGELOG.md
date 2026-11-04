@@ -4,6 +4,17 @@ All notable changes to this project are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 versioning follows [Semantic Versioning](https://semver.org/).
 
+## [1.3.1] - 2026-11-04
+
+### Fixed
+- The diagnostics panel was polluting itself: opening the popup navigated a tab to
+  the extension's own page, which `onCommitted` logged as a "not a bookmark" entry,
+  pushing the entries you actually wanted to read off the list. The extension's own
+  pages are now skipped before any logging happens.
+
+### Added
+- Panel screenshots in `docs/` (`popup-en.png`, `popup-zh.png`), embedded in both READMEs.
+
 ## [1.3.0] - 2026-11-04
 
 ### Added
